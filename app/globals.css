@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  /* The nav is sticky and ~57px tall; without this, anchored sections land
+     underneath it and the heading is hidden. */
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background-color: #0d0f12;
+  color: #eceae4;
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(91, 141, 239, 0.06), transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(224, 164, 88, 0.05), transparent 40%);
+}
+
+::selection {
+  background-color: #5b8def;
+  color: #0d0f12;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #262b33 #0d0f12;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0f12;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #262b33;
+  border-radius: 6px;
+  border: 2px solid #0d0f12;
+}
+
+:focus-visible {
+  outline: 2px solid #5b8def;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.text-glow {
+  text-shadow: 0 0 24px rgba(91, 141, 239, 0.25);
+}
+
+/* --- Hero terminal intro -------------------------------------------------
+   Deliberately CSS-only: the full text ships in the server-rendered HTML and
+   is merely clipped, so there's no layout shift, no flash of untyped content,
+   and it still reads fine with JS disabled.
+
+   Typed lines are monospace, so `Nch` is exactly the rendered width of an
+   N-character string — that's what --type-w encodes. */
+@keyframes type {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+}
+
+.type {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  width: var(--type-w);
+  animation: type var(--type-dur) steps(var(--type-steps), end)
+    var(--type-delay) both;
+}
+
+.reveal {
+  animation: reveal 220ms ease-out var(--type-delay) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    /* Zeroing duration isn't enough on its own — a staggered delay would
+       still hold the element at its from-state for seconds. */
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
