@@ -1,4 +1,5 @@
 import { Project } from '@/data/projects';
+import { asset } from '@/lib/site';
 import CategoryBadge from './CategoryBadge';
 
 export default function ProjectCard({ project }: { project: Project }) {
@@ -25,6 +26,23 @@ export default function ProjectCard({ project }: { project: Project }) {
         </p>
       )}
 
+      {project.image && (
+        <div className="mt-4 overflow-hidden rounded border border-border">
+          {/* Plain <img>: next/image's optimizer doesn't run in a static export,
+              and width/height reserve the box so the load can't shift layout. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={asset(project.image.src)}
+            alt={project.image.alt}
+            width={project.image.width}
+            height={project.image.height}
+            loading="lazy"
+            decoding="async"
+            className="block h-auto w-full opacity-90 transition-opacity group-hover:opacity-100"
+          />
+        </div>
+      )}
+
       <div className="mt-4 flex flex-wrap gap-2">
         {project.stack.map((tech) => (
           <span
@@ -36,16 +54,22 @@ export default function ProjectCard({ project }: { project: Project }) {
         ))}
       </div>
 
-      {project.link && (
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1 font-mono text-xs text-fullstack underline decoration-fullstack/40 underline-offset-4 hover:decoration-fullstack"
-        >
-          {project.linkLabel ?? 'View repo'} &rarr;
-        </a>
+      {project.links && project.links.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+          {project.links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-mono text-xs text-fullstack underline decoration-fullstack/40 underline-offset-4 hover:decoration-fullstack"
+            >
+              {l.label} &rarr;
+            </a>
+          ))}
+        </div>
       )}
+
     </article>
   );
 }
